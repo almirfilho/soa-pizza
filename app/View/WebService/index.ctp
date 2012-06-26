@@ -18,11 +18,6 @@ xmlns='http://schemas.xmlsoap.org/wsdl/'>
 				<xs:element name="value" type="xs:float"/>
 			</xs:sequence>
 		</xs:complexType>
-		<!-- <xs:complexType name="ArrayOfPrice">
-			<xs:sequence>
-				<xs:element name="Price" type="tns:Price" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
-			</xs:sequence>
-		</xs:complexType> -->
 
 		<!-- Pizza Size -->
 		<xs:complexType name="PizzaSize">
@@ -58,6 +53,7 @@ xmlns='http://schemas.xmlsoap.org/wsdl/'>
 			<xs:sequence>
 				<xs:element name="id" type="xs:integer"/>
 				<xs:element name="title" type="xs:string"/>
+				<xs:element name="ingredients" type="xs:string"/>
 				<xs:sequence>
 					<xs:element name="Price" type="tns:Price" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
 				</xs:sequence>
@@ -68,6 +64,35 @@ xmlns='http://schemas.xmlsoap.org/wsdl/'>
 				<xs:element name="PizzaFlavor" type="tns:PizzaFlavor" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
 			</xs:sequence>
 		</xs:complexType>
+
+		<!-- PizzaItem -->
+		<xs:complexType name="PizzaItem">
+			<xs:sequence>
+				<xs:element name="flavorId" type="xs:integer"/>
+				<xs:element name="sizeId" type="xs:integer"/>
+				<xs:element name="borderId" type="xs:integer"/>
+			</xs:sequence>
+		</xs:complexType>
+
+		<!-- Delivery -->
+		<xs:complexType name="Delivery">
+			<xs:sequence>
+				<xs:element name="name" type="xs:string"/>
+				<xs:element name="address" type="xs:string"/>
+				<xs:element name="phone" type="xs:string"/>
+			</xs:sequence>
+		</xs:complexType>
+
+		<!-- PizzaOrder -->
+		<xs:complexType name="PizzaOrder">
+			<xs:sequence>
+				<xs:element name="Delivery" type="tns:Delivery"/>
+				<xs:sequence>
+					<xs:element name="PizzaItem" type="tns:PizzaItem" minOccurs="1" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:sequence>
+		</xs:complexType>
+
 	</xs:schema>
 </types>
 
@@ -95,6 +120,14 @@ xmlns='http://schemas.xmlsoap.org/wsdl/'>
 	<part name='Result' type='tns:ArrayOfPizzaFlavor'/>
 </message>
 
+<!-- orderPizza -->
+<message name='orderPizzaSoapRequest'>
+	<part name='upc' type='tns:PizzaOrder'/>
+</message>
+<message name='orderPizzaSoapResponse'>
+	<part name='Result' type='xsd:string'/>
+</message>
+
 <portType name='PizzaPortType'>
 	<operation name='getSizes'>
 		<input message='tns:getSizesSoapRequest'/>
@@ -109,6 +142,11 @@ xmlns='http://schemas.xmlsoap.org/wsdl/'>
 	<operation name='getFlavors'>
 		<input message='tns:getFlavorsSoapRequest'/>
 		<output message='tns:getFlavorsSoapResponse'/>
+	</operation>
+
+	<operation name='orderPizza'>
+		<input message='tns:orderPizzaSoapRequest'/>
+		<output message='tns:orderPizzaSoapResponse'/>
 	</operation>
 </portType>
 
@@ -137,6 +175,16 @@ xmlns='http://schemas.xmlsoap.org/wsdl/'>
 
 	<operation name='getFlavors'>
 		<soap:operation soapAction='urn:xmethods-delayed-quotes#getFlavors'/>
+		<input>
+			<soap:body use='encoded' namespace='urn:xmethods-delayed-quotes' encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+		</input>
+		<output>
+			<soap:body use='encoded' namespace='urn:xmethods-delayed-quotes' encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+		</output>
+	</operation>
+
+	<operation name='orderPizza'>
+		<soap:operation soapAction='urn:xmethods-delayed-quotes#orderPizza'/>
 		<input>
 			<soap:body use='encoded' namespace='urn:xmethods-delayed-quotes' encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
 		</input>

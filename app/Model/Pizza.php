@@ -43,12 +43,26 @@ class Pizza extends AppModel {
 		$pizzaFlavor = new StdClass();
 		$pizzaFlavor->id = $flavor[ 'Flavor' ][ 'id' ];
 		$pizzaFlavor->title = $flavor[ 'Flavor' ][ 'title' ];
+		$pizzaFlavor->ingredients = $flavor[ 'Flavor' ][ 'ingredients' ];
 		return $pizzaFlavor;
 	}
 
 	/*----------------------------------------
 	 * SOAP Services
 	 ----------------------------------------*/
+
+	public function orderPizza($inputParam = null){
+
+		// if( $inputParam ){
+			// $i = print_r($inputParam,true);
+			// $this->query("INSERT INTO tests (string) VALUES ('{$i}')");
+		// }
+
+
+
+		// return 'teste feito';
+		return print_r($inputParam,true);
+	}
 
 	public function getSizes($inputParam = null) {
 	
@@ -68,8 +82,8 @@ class Pizza extends AppModel {
 		$result = new StdClass();
 		$result->PizzaBorder = array();
 
-		$borders = $this->Border->find( 'all' );
-		$sizes = $this->Size->find( 'all' );
+		$borders = $this->Border->find( 'all', array( 'order' => 'title' ) );
+		$sizes = $this->Size->find( 'all', array( 'order' => 'factor' ) );
 
 		foreach( $borders as $border ){
 			
@@ -93,8 +107,8 @@ class Pizza extends AppModel {
 		$result = new StdClass();
 		$result->PizzaFlavor = array();
 
-		$flavors = $this->Flavor->find( 'all' );
-		$sizes = $this->Size->find( 'all' );
+		$flavors = $this->Flavor->find( 'all', array( 'order' => 'title' ) );
+		$sizes = $this->Size->find( 'all', array( 'order' => 'factor' ) );
 
 		foreach( $flavors as $flavor ){
 			

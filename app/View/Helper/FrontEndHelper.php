@@ -146,4 +146,12 @@ class FrontEndHelper extends AppHelper {
 		return null;
 	}
 
+	public function isActive( $action, $active ){
+
+		if( strtoupper($action) == strtoupper($active) )
+			return 'active';
+
+		return null;
+	}
+
 }
