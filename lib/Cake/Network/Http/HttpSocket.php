@@ -5,12 +5,12 @@
  * PHP 5
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.Network.Http
  * @since         CakePHP(tm) v 1.2.0
@@ -390,11 +390,10 @@ class HttpSocket extends CakeSocket {
 		}
 
 		list($plugin, $responseClass) = pluginSplit($this->responseClass, true);
-		App::uses($this->responseClass, $plugin . 'Network/Http');
+		App::uses($responseClass, $plugin . 'Network/Http');
 		if (!class_exists($responseClass)) {
 			throw new SocketException(__d('cake_dev', 'Class %s not found.', $this->responseClass));
 		}
-		$responseClass = $this->responseClass;
 		$this->response = new $responseClass($response);
 		if (!empty($this->response->cookies)) {
 			if (!isset($this->config['request']['cookies'][$Host])) {
@@ -768,7 +767,58 @@ class HttpSocket extends CakeSocket {
 		if (is_array($query)) {
 			return $query;
 		}
-		parse_str(ltrim($query, '?'), $parsedQuery);
+
+		if (is_array($query)) {
+			return $query;
+		}
+		$parsedQuery = array();
+
+		if (is_string($query) && !empty($query)) {
+			$query = preg_replace('/^\?/', '', $query);
+			$items = explode('&', $query);
+
+			foreach ($items as $item) {
+				if (strpos($item, '=') !== false) {
+					list($key, $value) = explode('=', $item, 2);
+				} else {
+					$key = $item;
+					$value = null;
+				}
+
+				$key = urldecode($key);
+				$value = urldecode($value);
+
+				if (preg_match_all('/\[([^\[\]]*)\]/iUs', $key, $matches)) {
+					$subKeys = $matches[1];
+					$rootKey = substr($key, 0, strpos($key, '['));
+					if (!empty($rootKey)) {
+						array_unshift($subKeys, $rootKey);
+					}
+					$queryNode =& $parsedQuery;
+
+					foreach ($subKeys as $subKey) {
+						if (!is_array($queryNode)) {
+							$queryNode = array();
+						}
+
+						if ($subKey === '') {
+							$queryNode[] = array();
+							end($queryNode);
+							$subKey = key($queryNode);
+						}
+						$queryNode =& $queryNode[$subKey];
+					}
+					$queryNode = $value;
+					continue;
+				}
+				if (!isset($parsedQuery[$key])) {
+					$parsedQuery[$key] = $value;
+				} else {
+					$parsedQuery[$key] = (array)$parsedQuery[$key];
+					$parsedQuery[$key][] = $value;
+				}
+			}
+		}
 		return $parsedQuery;
 	}
 

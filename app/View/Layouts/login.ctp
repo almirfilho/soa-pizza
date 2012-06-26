@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="robots" content="noindex, nofollow" />
-<title><?= $title_for_layout ?> :: Login</title>
+<title><?= strip_tags( $title_for_layout ) ?> :: Login</title>
 
 <?php
 	print $this->Html->css( array( 'bootstrap.min', 'bootstrap-responsive.min', 'cordel.login' ) );

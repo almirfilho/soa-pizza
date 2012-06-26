@@ -5,12 +5,12 @@
  * PHP 5
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @since         CakePHP(tm) v 1.2.0.5012
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -105,6 +105,38 @@ class ExtractTask extends AppShell {
 	protected $_validationDomain = 'default';
 
 /**
+ * Method to interact with the User and get path selections.
+ *
+ * @return void
+ */
+	protected function _getPaths() {
+		$defaultPath = APP;
+		while (true) {
+			$currentPaths = count($this->_paths) > 0 ? $this->_paths : array('None');
+			$message = __d(
+				'cake_console',
+				"Current paths: %s\nWhat is the path you would like to extract?\n[Q]uit [D]one",
+				implode(', ', $currentPaths)
+			);
+			$response = $this->in($message, null, $defaultPath);
+			if (strtoupper($response) === 'Q') {
+				$this->out(__d('cake_console', 'Extract Aborted'));
+				return $this->_stop();
+			} elseif (strtoupper($response) === 'D' && count($this->_paths)) {
+				$this->out();
+				return;
+			} elseif (strtoupper($response) === 'D') {
+				$this->err(__d('cake_console', '<warning>No directories selected.</warning> Please choose a directory.'));
+			} elseif (is_dir($response)) {
+				$this->_paths[] = $response;
+				$defaultPath = 'D';
+			} else {
+				$this->err(__d('cake_console', 'The directory path you supplied was not found. Please try again.'));
+			}
+			$this->out();
+		}
+	}
+/**
  * Execution method always used for tasks
  *
  * @return void
@@ -126,24 +158,7 @@ class ExtractTask extends AppShell {
 			$this->_paths = array(CakePlugin::path($plugin));
 			$this->params['plugin'] = $plugin;
 		} else {
-			$defaultPath = APP;
-			$message = __d('cake_console', "What is the path you would like to extract?\n[Q]uit [D]one");
-			while (true) {
-				$response = $this->in($message, null, $defaultPath);
-				if (strtoupper($response) === 'Q') {
-					$this->out(__d('cake_console', 'Extract Aborted'));
-					$this->_stop();
-				} elseif (strtoupper($response) === 'D') {
-					$this->out();
-					break;
-				} elseif (is_dir($response)) {
-					$this->_paths[] = $response;
-					$defaultPath = 'D';
-				} else {
-					$this->err(__d('cake_console', 'The directory path you supplied was not found. Please try again.'));
-				}
-				$this->out();
-			}
+			$this->_getPaths();
 		}
 
 		if (!empty($this->params['exclude-plugins']) && $this->_isExtractingApp()) {
@@ -463,6 +478,8 @@ class ExtractTask extends AppShell {
  * @return void
  */
 	protected function _buildFiles() {
+		$paths = $this->_paths;
+		$paths[] = realpath(APP) . DS;
 		foreach ($this->_translations as $domain => $translations) {
 			foreach ($translations as $msgid => $details) {
 				$plural = $details['msgid_plural'];
@@ -473,7 +490,7 @@ class ExtractTask extends AppShell {
 					$occurrences[] = $file . ':' . implode(';', $lines);
 				}
 				$occurrences = implode("\n#: ", $occurrences);
-				$header = '#: ' . str_replace($this->_paths, '', $occurrences) . "\n";
+				$header = '#: ' . str_replace($paths, '', $occurrences) . "\n";
 
 				if ($plural === false) {
 					$sentence = "msgid \"{$msgid}\"\n";

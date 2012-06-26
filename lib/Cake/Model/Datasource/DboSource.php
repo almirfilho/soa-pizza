@@ -5,12 +5,12 @@
  * PHP 5
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.Model.Datasource
  * @since         CakePHP(tm) v 0.10.0.1076
@@ -137,7 +137,7 @@ class DboSource extends DataSource {
 /**
  * Caches serialized results of executed queries
  *
- * @var array Maximum number of queries in the queries log.
+ * @var array Cache of results from executed sql queries.
  */
 	protected $_queryCache = array();
 
@@ -228,6 +228,7 @@ class DboSource extends DataSource {
  *
  * @param array $config Array of configuration information for the Datasource.
  * @param boolean $autoConnect Whether or not the datasource should automatically connect.
+ * @throws MissingConnectionException when a connection cannot be made.
  */
 	public function __construct($config = null, $autoConnect = true) {
 		if (!isset($config['prefix'])) {
@@ -341,7 +342,6 @@ class DboSource extends DataSource {
 		}
 	}
 
-
 /**
  * Returns an object to represent a database identifier in a query. Expression objects
  * are not sanitized or escaped.
@@ -419,6 +419,7 @@ class DboSource extends DataSource {
  * @param array $prepareOptions Options to be used in the prepare statement
  * @return mixed PDOStatement if query executes with no problem, true as the result of a successful, false on error
  * query returning no rows, such as a CREATE statement, false otherwise
+ * @throws PDOException
  */
 	protected function _execute($sql, $params = array(), $prepareOptions = array()) {
 		$sql = trim($sql);
@@ -921,7 +922,7 @@ class DboSource extends DataSource {
 		if (is_object($model)) {
 			$schemaName = $model->schemaName;
 			$table = $model->tablePrefix . $model->table;
-		} elseif (!empty($this->config['prefix']) && strpos($model, $this->config['prefix']) === false) {
+		} elseif (!empty($this->config['prefix']) && strpos($model, $this->config['prefix']) !== 0) {
 			$table = $this->config['prefix'] . strval($model);
 		} else {
 			$table = strval($model);
@@ -1112,7 +1113,7 @@ class DboSource extends DataSource {
  * @return array Array of results that have been filtered through $model->afterFind
  */
 	protected function _filterResults(&$results, Model $model, $filtered = array()) {
-		$current = current($results);
+		$current = reset($results);
 		if (!is_array($current)) {
 			return array();
 		}
@@ -1148,6 +1149,7 @@ class DboSource extends DataSource {
  * @param integer $recursive Number of levels of association
  * @param array $stack
  * @return mixed
+ * @throws CakeException when results cannot be created.
  */
 	public function queryAssociation(Model $model, &$linkModel, $type, $association, $assocData, &$queryData, $external = false, &$resultSet, $recursive, $stack) {
 		if ($query = $this->generateAssociationQuery($model, $linkModel, $type, $association, $assocData, $queryData, $external, $resultSet)) {
@@ -1199,12 +1201,11 @@ class DboSource extends DataSource {
 				if (!empty($ins)) {
 					$ins = array_unique($ins);
 					if (count($ins) > 1) {
-						$query = str_replace('{$__cakeID__$}', '(' .implode(', ', $ins) .')', $query);
+						$query = str_replace('{$__cakeID__$}', '(' . implode(', ', $ins) . ')', $query);
 						$query = str_replace('= (', 'IN (', $query);
 					} else {
 						$query = str_replace('{$__cakeID__$}', $ins[0], $query);
 					}
-
 					$query = str_replace(' WHERE 1 = 1', '', $query);
 				}
 
@@ -1650,7 +1651,8 @@ class DboSource extends DataSource {
 			$data['conditions'] = trim($this->conditions($data['conditions'], true, false));
 		}
 		if (!empty($data['table'])) {
-			$data['table'] = $this->fullTableName($data['table']);
+			$schema = !(is_string($data['table']) && strpos($data['table'], '(') === 0);
+			$data['table'] = $this->fullTableName($data['table'], true, $schema);
 		}
 		return $this->renderJoinStatement($data);
 	}
@@ -1835,6 +1837,8 @@ class DboSource extends DataSource {
 
 			if ($quoteValues) {
 				$update .= $this->value($value, $model->getColumnType($field));
+			} elseif ($model->getColumnType($field) == 'boolean' && (is_int($value) || is_bool($value))) {
+				$update .= $this->boolean($value, true);
 			} elseif (!$alias) {
 				$update .= str_replace($quotedAlias . '.', '', str_replace(
 					$model->alias . '.', '', $value
@@ -1842,7 +1846,7 @@ class DboSource extends DataSource {
 			} else {
 				$update .= $value;
 			}
-			$updates[] =  $update;
+			$updates[] = $update;
 		}
 		return $updates;
 	}
@@ -2356,7 +2360,7 @@ class DboSource extends DataSource {
 					if ($not) {
 						$out[] = $not . '(' . $value[0] . ')';
 					} else {
-						$out[] = $value[0] ;
+						$out[] = $value[0];
 					}
 				} else {
 					$out[] = '(' . $not . '(' . implode(') ' . strtoupper($key) . ' (', $value) . '))';
@@ -2612,11 +2616,11 @@ class DboSource extends DataSource {
 			$key = trim($key);
 
 			if (is_object($model) && $model->isVirtualField($key)) {
-				$key =  '(' . $this->_quoteFields($model->getVirtualField($key)) . ')';
+				$key = '(' . $this->_quoteFields($model->getVirtualField($key)) . ')';
 			}
 			list($alias, $field) = pluginSplit($key);
 			if (is_object($model) && $alias !== $model->alias && is_object($model->{$alias}) && $model->{$alias}->isVirtualField($key)) {
-				$key =  '(' . $this->_quoteFields($model->{$alias}->getVirtualField($key)) . ')';
+				$key = '(' . $this->_quoteFields($model->{$alias}->getVirtualField($key)) . ')';
 			}
 
 			if (strpos($key, '.')) {

@@ -7,12 +7,12 @@
  * PHP 5
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       app.Config
  * @since         CakePHP(tm) v 0.2.9
@@ -37,6 +37,10 @@
 // Defining Admin User and Admin Profiles IDs
 	Configure::write('AdminUserId', 1);
 	Configure::write('AdminProfileId', 1);
+
+// Webservices
+	Configure::write('wsdlUrl', 'http://localhost/ufma/soa-pizza/webservice');
+	Configure::write('soapServerUrl', 'http://localhost/ufma/soa-pizza/webservice/service');
 
 /**
  * Configure the Error handler used to handle errors for your application.  By default
@@ -194,7 +198,7 @@
 /**
  * A random numeric string (digits only) used to encrypt/decrypt strings.
  */
-	Configure::write('Security.cipherSeed', '0977654435670927655656220204710384');
+	Configure::write('Security.cipherSeed', '133131313133111133131');
 
 /**
  * Apply timestamps with the last modified time to static assets (js, css, images).

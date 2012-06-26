@@ -4,14 +4,14 @@
  *
  * PHP 5
  *
- * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
- * Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) Tests <http://book.cakephp.org/2.0/en/development/testing.html>
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://book.cakephp.org/2.0/en/development/testing.html CakePHP(tm) Tests
  * @package       Cake.Test.Case.Controller.Component
  * @since         CakePHP(tm) v 1.2.0.5347
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -23,11 +23,11 @@ App::uses('AclComponent', 'Controller/Component');
 App::uses('FormAuthenticate', 'Controller/Component/Auth');
 
 /**
-* TestAuthComponent class
-*
-* @package       Cake.Test.Case.Controller.Component
-* @package       Cake.Test.Case.Controller.Component
-*/
+ * TestAuthComponent class
+ *
+ * @package       Cake.Test.Case.Controller.Component
+ * @package       Cake.Test.Case.Controller.Component
+ */
 class TestAuthComponent extends AuthComponent {
 
 /**
@@ -53,11 +53,11 @@ class TestAuthComponent extends AuthComponent {
 }
 
 /**
-* AuthUser class
-*
-* @package       Cake.Test.Case.Controller.Component
-* @package       Cake.Test.Case.Controller.Component
-*/
+ * AuthUser class
+ *
+ * @package       Cake.Test.Case.Controller.Component
+ * @package       Cake.Test.Case.Controller.Component
+ */
 class AuthUser extends CakeTestModel {
 
 /**
@@ -77,11 +77,11 @@ class AuthUser extends CakeTestModel {
 }
 
 /**
-* AuthTestController class
-*
-* @package       Cake.Test.Case.Controller.Component
-* @package       Cake.Test.Case.Controller.Component
-*/
+ * AuthTestController class
+ *
+ * @package       Cake.Test.Case.Controller.Component
+ * @package       Cake.Test.Case.Controller.Component
+ */
 class AuthTestController extends Controller {
 
 /**
@@ -155,7 +155,6 @@ class AuthTestController extends Controller {
  * @return void
  */
 	public function logout() {
-
 	}
 
 /**
@@ -195,7 +194,6 @@ class AuthTestController extends Controller {
  * @return void
  */
 	public function isAuthorized() {
-
 	}
 
 }
@@ -269,14 +267,15 @@ class AjaxAuthController extends Controller {
 		$this->testUrl = Router::url($url);
 		return false;
 	}
+
 }
 
 /**
-* AuthComponentTest class
-*
-* @package       Cake.Test.Case.Controller.Component
-* @package       Cake.Test.Case.Controller.Component
-*/
+ * AuthComponentTest class
+ *
+ * @package       Cake.Test.Case.Controller.Component
+ * @package       Cake.Test.Case.Controller.Component
+ */
 class AuthComponentTest extends CakeTestCase {
 
 /**
@@ -574,7 +573,7 @@ class AuthComponentTest extends CakeTestCase {
 		);
 		$objects = $this->Controller->Auth->constructAuthorize();
 		$result = $objects[0];
-		$this->assertEquals($result->settings['actionPath'], 'controllers/');
+		$this->assertEquals('controllers/', $result->settings['actionPath']);
 	}
 
 /**
@@ -605,7 +604,7 @@ class AuthComponentTest extends CakeTestCase {
 		);
 		$objects = $this->Controller->Auth->constructAuthenticate();
 		$result = $objects[0];
-		$this->assertEquals($result->settings['userModel'], 'AuthUser');
+		$this->assertEquals('AuthUser', $result->settings['userModel']);
 	}
 
 /**
@@ -654,7 +653,7 @@ class AuthComponentTest extends CakeTestCase {
 
 		$this->Controller->request['action'] = 'login';
 		$this->assertFalse($this->Controller->Auth->startup($this->Controller));
-	
+
 		$this->Controller->Auth->deny();
 		$this->Controller->Auth->allow(null);
 
@@ -738,7 +737,7 @@ class AuthComponentTest extends CakeTestCase {
 		$this->Controller->request->query['url'] = Router::normalize($url);
 		$this->Controller->Auth->initialize($this->Controller);
 		$this->Controller->Auth->allow('action_name', 'anotherAction');
-		$this->assertEquals($this->Controller->Auth->allowedActions, array('action_name', 'anotherAction'));
+		$this->assertEquals(array('action_name', 'anotherAction'), $this->Controller->Auth->allowedActions);
 	}
 
 /**
@@ -805,8 +804,8 @@ class AuthComponentTest extends CakeTestCase {
 		$expected = Router::normalize('/admin');
 		$this->assertEquals($expected, $this->Auth->redirect());
 
-		//Ticket #4750
-		//named params
+		// Ticket #4750
+		// Named Parameters
 		$this->Controller->request = $this->Auth->request;
 		$this->Auth->Session->delete('Auth');
 		$url = '/posts/index/year:2008/month:feb';
@@ -818,7 +817,7 @@ class AuthComponentTest extends CakeTestCase {
 		$expected = Router::normalize('posts/index/year:2008/month:feb');
 		$this->assertEquals($expected, $this->Auth->Session->read('Auth.redirect'));
 
-		//passed args
+		// Passed Arguments
 		$this->Auth->Session->delete('Auth');
 		$url = '/posts/view/1';
 		$this->Auth->request->addParams(Router::parse($url));
@@ -849,7 +848,7 @@ class AuthComponentTest extends CakeTestCase {
 
 		$_GET = $_back;
 
-		//external authed action
+		// External Authed Action
 		$_SERVER['HTTP_REFERER'] = 'http://webmail.example.com/view/message';
 		$this->Auth->Session->delete('Auth');
 		$url = '/posts/edit/1';
@@ -864,7 +863,7 @@ class AuthComponentTest extends CakeTestCase {
 		$expected = Router::normalize('/posts/edit/1');
 		$this->assertEquals($expected, $this->Auth->Session->read('Auth.redirect'));
 
-		//external direct login link
+		// External Direct Login Link
 		$_SERVER['HTTP_REFERER'] = 'http://webmail.example.com/view/message';
 		$this->Auth->Session->delete('Auth');
 		$url = '/AuthTest/login';
@@ -881,7 +880,40 @@ class AuthComponentTest extends CakeTestCase {
 	}
 
 /**
- * test that no redirects or authorization tests occur on the loginAction
+ * Default to loginRedirect, if set, on authError.
+ *
+ * @return void
+ */
+	public function testDefaultToLoginRedirect() {
+		$_SERVER['HTTP_REFERER'] = false;
+		$_ENV['HTTP_REFERER'] = false;
+		putenv('HTTP_REFERER=');
+
+		$url = '/party/on';
+		$this->Auth->request = $CakeRequest = new CakeRequest($url);
+		$this->Auth->request->addParams(Router::parse($url));
+		$this->Auth->authorize = array('Controller');
+		$this->Auth->login(array('username' => 'mariano', 'password' => 'cake'));
+		$this->Auth->loginRedirect = array(
+			'controller' => 'something', 'action' => 'else',
+		);
+
+		$CakeResponse = new CakeResponse();
+		$Controller = $this->getMock(
+			'Controller',
+			array('on', 'redirect'),
+			array($CakeRequest, $CakeResponse)
+		);
+
+		$expected = Router::url($this->Auth->loginRedirect, true);
+		$Controller->expects($this->once())
+			->method('redirect')
+			->with($this->equalTo($expected));
+		$this->Auth->startup($Controller);
+	}
+
+/**
+ * Test that no redirects or authorization tests occur on the loginAction
  *
  * @return void
  */
@@ -939,7 +971,7 @@ class AuthComponentTest extends CakeTestCase {
 		);
 
 		$this->Auth->startup($this->Controller);
-		$this->assertEquals($this->Controller->testUrl, '/admin/auth_test/login');
+		$this->assertEquals('/admin/auth_test/login', $this->Controller->testUrl);
 
 		Configure::write('Routing.prefixes', $pref);
 	}
@@ -951,7 +983,7 @@ class AuthComponentTest extends CakeTestCase {
  */
 	public function testAjaxLogin() {
 		App::build(array(
-			'View' => array(CAKE . 'Test' . DS . 'test_app' . DS . 'View'. DS)
+			'View' => array(CAKE . 'Test' . DS . 'test_app' . DS . 'View' . DS)
 		));
 		$_SERVER['HTTP_X_REQUESTED_WITH'] = "XMLHttpRequest";
 
@@ -1077,7 +1109,7 @@ class AuthComponentTest extends CakeTestCase {
 		$this->Auth->logoutRedirect = '/';
 		$result = $this->Auth->logout();
 
-		$this->assertEquals($result, '/');
+		$this->assertEquals('/', $result);
 		$this->assertNull($this->Auth->Session->read('Auth.AuthUser'));
 		$this->assertNull($this->Auth->Session->read('Auth.redirect'));
 	}
@@ -1225,6 +1257,6 @@ class AuthComponentTest extends CakeTestCase {
 		$result = $this->Auth->password('password');
 		$expected = Security::hash('password', null, true);
 		$this->assertEquals($expected, $result);
-
 	}
+
 }

@@ -8,7 +8,7 @@ class FrontEndHelper extends AppHelper {
 	 * Atributtes
 	 ----------------------------------------*/
 	
-	public $helpers = array( 'Html', 'Session', 'Time' );
+	public $helpers = array( 'Html', 'Session', 'Time', 'Number' );
 
 	private $months = array( 1 => 'Janeiro', 2 => 'Fevereiro', 3 => 'Março', 4 => 'Abril', 5 => 'Maio', 6 => 'Junho', 7 => 'Julho', 8 => 'Agosto', 9 => 'Setembro', 10 => 'Outubro', 11 => 'Novembro', 12 => 'Dezembro' );
 
@@ -28,6 +28,11 @@ class FrontEndHelper extends AppHelper {
 	/*----------------------------------------
 	 * Methods
 	 ----------------------------------------*/
+
+	public function cash( $value ){
+
+		return $this->Number->format( $value, array( 'before' => 'R$ ', 'decimals' => ',', 'thousands' => '.' ) );
+	}
 
 	public function message(){
 	

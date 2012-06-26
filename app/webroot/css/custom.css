@@ -1,1 +1,9 @@
 @charset "utf-8";
+
+a.brand span.r {
+	color: #6DD900;
+}
+
+a.brand span.g {
+	color: #FF2626;
+}

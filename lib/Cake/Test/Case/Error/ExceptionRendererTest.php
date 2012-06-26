@@ -4,14 +4,14 @@
  *
  * PHP 5
  *
- * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
- * Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) Tests <http://book.cakephp.org/2.0/en/development/testing.html>
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://book.cakephp.org/2.0/en/development/testing.html CakePHP(tm) Tests
  * @package       Cake.Test.Case.Error
  * @since         CakePHP(tm) v 2.0
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -67,6 +67,7 @@ class BlueberryComponent extends Component {
 	public function initialize(Controller $controller) {
 		$this->testName = 'BlueberryComponent';
 	}
+
 }
 
 /**
@@ -108,6 +109,7 @@ class TestErrorController extends Controller {
 		$this->autoRender = false;
 		return 'what up';
 	}
+
 }
 
 /**
@@ -125,6 +127,7 @@ class MyCustomExceptionRenderer extends ExceptionRenderer {
 	public function missingWidgetThing() {
 		echo 'widget thing is missing';
 	}
+
 }
 
 /**
@@ -132,7 +135,8 @@ class MyCustomExceptionRenderer extends ExceptionRenderer {
  *
  * @package       Cake.Test.Case.Error
  */
-class MissingWidgetThingException extends NotFoundException { }
+class MissingWidgetThingException extends NotFoundException {
+}
 
 
 /**
@@ -142,7 +146,7 @@ class MissingWidgetThingException extends NotFoundException { }
  */
 class ExceptionRendererTest extends CakeTestCase {
 
-	public $_restoreError = false;
+	protected $_restoreError = false;
 
 /**
  * setup create a request object to get out of router later.
@@ -153,7 +157,7 @@ class ExceptionRendererTest extends CakeTestCase {
 		parent::setUp();
 		App::build(array(
 			'View' => array(
-				CAKE . 'Test' . DS . 'test_app' . DS . 'View'. DS
+				CAKE . 'Test' . DS . 'test_app' . DS . 'View' . DS
 			)
 		), App::RESET);
 		Router::reload();
@@ -161,8 +165,6 @@ class ExceptionRendererTest extends CakeTestCase {
 		$request = new CakeRequest(null, false);
 		$request->base = '';
 		Router::setRequestInfo($request);
-		$this->_debug = Configure::read('debug');
-		$this->_error = Configure::read('Error');
 		Configure::write('debug', 2);
 	}
 
@@ -172,9 +174,6 @@ class ExceptionRendererTest extends CakeTestCase {
  * @return void
  */
 	public function tearDown() {
-		Configure::write('debug', $this->_debug);
-		Configure::write('Error', $this->_error);
-		App::build();
 		if ($this->_restoreError) {
 			restore_error_handler();
 		}
@@ -207,7 +206,7 @@ class ExceptionRendererTest extends CakeTestCase {
 		$ExceptionRenderer->render();
 		$result = ob_get_clean();
 
-		$this->assertEquals($result, 'widget thing is missing');
+		$this->assertEquals('widget thing is missing', $result);
 	}
 
 /**
@@ -226,7 +225,7 @@ class ExceptionRendererTest extends CakeTestCase {
 		$ExceptionRenderer->render();
 		$result = ob_get_clean();
 
-		$this->assertEquals($result, 'widget thing is missing', 'Method declared in subclass converted to error400');
+		$this->assertEquals('widget thing is missing', $result, 'Method declared in subclass converted to error400');
 	}
 
 /**

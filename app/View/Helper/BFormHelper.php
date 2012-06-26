@@ -87,7 +87,7 @@ class BFormHelper extends AppHelper {
 		if( !empty( $options[ 'prepend' ] ) ){
 
 			$options[ 'before' ] = "<div class=\"input-prepend\"><span class=\"add-on\">{$options['prepend']}</span>";
-			$options[ 'after' ] .= '</div>';
+			isset( $options[ 'after' ] ) ? $options[ 'after' ] .= $this->defaultOptions['after'].'</div>' : $options[ 'after' ] = $this->defaultOptions['after'].'</div>';
 		}
 
 		$str .= $this->Form->input( $fieldName, array_merge( $this->defaultOptions, $options ) );

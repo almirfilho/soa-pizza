@@ -37,11 +37,11 @@ class AppController extends Controller {
 	 * Atributtes
 	 ----------------------------------------*/
 	
-	public $title		=	"Cordel";
+	public $title		=	'<span class="r">SOA</span> <span class="g">Pizza</span>';
 	
 	public $components	= 	array(
 
-		'Security',
+		// 'Security',
 		'Auth' => array( 
 			'authorize'  => 'Controller',
 			'authError'  => 'Por favor, efetue <strong>login</strong> para ter acesso a esta área.',
@@ -53,7 +53,7 @@ class AppController extends Controller {
 		'Menu' 
 	);
     
-    public $helpers		= 	array( 'Session', 'Form', 'Html', 'Paginator', 'Time', 'Text', 'FrontEnd', 'BForm' );
+    public $helpers		= 	array( 'Session', 'Form', 'Html', 'Paginator', 'Time', 'Text', 'Number', 'FrontEnd', 'BForm' );
     
     public $paginate	=	array( 'limit' => 20, 'order' => 'created DESC', 'contain' => false );
     
@@ -205,7 +205,7 @@ class AppController extends Controller {
 				break;
 
 			case 'noResult':
-				$str = up( $this->{$model}->gender )." <strong>".$this->{$model}->label."</strong> que você está tentando acessar <strong>não existe</strong>.";
+				$str = strtoupper( $this->{$model}->gender )." <strong>".$this->{$model}->label."</strong> que você está tentando acessar <strong>não existe</strong>.";
 				$class = 'error';
 				break;
 		}

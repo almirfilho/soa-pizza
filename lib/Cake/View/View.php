@@ -5,12 +5,12 @@
  * PHP 5
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.View
  * @since         CakePHP(tm) v 0.10.0.1076
@@ -332,8 +332,10 @@ class View extends Object {
  * @return CakeEventManager
  */
 	public function getEventManager() {
-		if (empty($this->_eventManager) || !$this->_eventManagerConfigured) {
+		if (empty($this->_eventManager)) {
 			$this->_eventManager = new CakeEventManager();
+		}
+		if (!$this->_eventManagerConfigured) {
 			$this->_eventManager->attach($this->Helpers);
 			$this->_eventManagerConfigured = true;
 		}
@@ -648,7 +650,7 @@ class View extends Object {
 
 /**
  * Fetch the content for a block. If a block is
- * empty or undefined '' will be returnned.
+ * empty or undefined '' will be returned.
  *
  * @param string $name Name of the block
  * @return The block content or '' if the block does not exist.
@@ -954,7 +956,7 @@ class View extends Object {
 				$name = trim($name, DS);
 			} elseif ($name[0] === '.') {
 				$name = substr($name, 3);
-			} elseif (!$plugin) {
+			} elseif (!$plugin || $this->viewPath !== $this->name) {
 				$name = $this->viewPath . DS . $subDir . $name;
 			}
 		}

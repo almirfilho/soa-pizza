@@ -4,13 +4,13 @@
  *
  * PHP 5
  *
- * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
- * Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) Tests <http://book.cakephp.org/2.0/en/development/testing.html>
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @since         CakePHP(tm) v 1.2.0.4433
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -33,10 +33,22 @@ class CakeHtmlReporter extends CakeBaseReporter {
  */
 	public function paintHeader() {
 		$this->_headerSent = true;
+		$this->sendContentType();
 		$this->sendNoCacheHeaders();
 		$this->paintDocumentStart();
 		$this->paintTestMenu();
 		echo "<ul class='tests'>\n";
+	}
+
+/**
+ * Set the content-type header so it is in the correct encoding.
+ *
+ * @return void
+ */
+	public function sendContentType() {
+		if (!headers_sent()) {
+			header('Content-Type: text/html; charset=' . Configure::read('App.encoding'));
+		}
 	}
 
 /**
@@ -91,7 +103,7 @@ class CakeHtmlReporter extends CakeBaseReporter {
 			$title = explode(DS, str_replace('.test.php', '', $testCase));
 			$title[count($title) - 1] = Inflector::camelize($title[count($title) - 1]);
 			$title = implode(' / ', $title);
-				$buffer .= "<li><a href='" . $this->baseUrl() . "?case=" . urlencode($testCase) . $urlExtra ."'>" . $title . "</a></li>\n";
+				$buffer .= "<li><a href='" . $this->baseUrl() . "?case=" . urlencode($testCase) . $urlExtra . "'>" . $title . "</a></li>\n";
 		}
 		$buffer .= "</ul>\n";
 		echo $buffer;
@@ -123,7 +135,7 @@ class CakeHtmlReporter extends CakeBaseReporter {
  */
 	public function paintFooter($result) {
 		ob_end_flush();
-		$colour = ($result->failureCount()  + $result->errorCount() > 0 ? "red" : "green");
+		$colour = ($result->failureCount() + $result->errorCount() > 0 ? "red" : "green");
 		echo "</ul>\n";
 		echo "<div style=\"";
 		echo "padding: 8px; margin: 1em 0; background-color: $colour; color: white;";
@@ -185,7 +197,7 @@ class CakeHtmlReporter extends CakeBaseReporter {
 		}
 		if (!empty($this->params['case'])) {
 			$query['case'] = $this->params['case'];
- 		}
+		}
 		$show = $this->_queryString($show);
 		$query = $this->_queryString($query);
 
@@ -345,6 +357,7 @@ class CakeHtmlReporter extends CakeBaseReporter {
 		if (!$this->_headerSent) {
 			echo $this->paintHeader();
 		}
-		echo '<h2>' . __d('cake_dev', 'Running  %s', $suite->getName())  . '</h2>';
+		echo '<h2>' . __d('cake_dev', 'Running  %s', $suite->getName()) . '</h2>';
 	}
+
 }

@@ -1,9 +1,9 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="robots" content="noindex, nofollow" />
-<title><?= $title_for_layout ?></title>
+<title><?= strip_tags( $title_for_layout ) ?></title>
 
 <?php
 	print $this->Html->css( array( 'bootstrap.min', 'bootstrap-responsive.min', 'cordel', 'custom' ) );

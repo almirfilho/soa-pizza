@@ -5,12 +5,12 @@
  * PHP 5
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @since         CakePHP(tm) v 1.3
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -398,8 +398,8 @@ class TestTask extends BakeTask {
 	protected function _addFixture($name) {
 		$parent = get_parent_class($name);
 		$prefix = 'app.';
-		if (strtolower($parent) != 'appmodel' && strtolower(substr($parent, - 8)) == 'appmodel') {
-			$pluginName = substr($parent, 0, strlen($parent) - 8);
+		if (strtolower($parent) != 'appmodel' && strtolower(substr($parent, -8)) == 'appmodel') {
+			$pluginName = substr($parent, 0, -8);
 			$prefix = 'plugin.' . Inflector::underscore($pluginName) . '.';
 		}
 		$fixture = $prefix . Inflector::underscore($name);
@@ -452,7 +452,7 @@ class TestTask extends BakeTask {
 			$construct = "new $fullClassName();\n";
 		}
 		if ($type == 'controller') {
-			$className = substr($fullClassName, 0, strlen($fullClassName) - 10);
+			$className = substr($fullClassName, 0, -10);
 			$construct = "new Test$fullClassName();\n";
 			$post = "\$this->{$className}->constructClasses();\n";
 		}
