@@ -67,3 +67,35 @@ body {
 	border-bottom: 1px solid #ccc;
 	padding-bottom: 15px;
 }
+
+div.block {
+	background-color: #ddd;
+	/*border: 1px solid #999;*/
+	/*border-radius: 4px;*/
+	/*margin-top: 20px;*/
+	/*padding: 15px;*/
+	box-sizing: border-box;
+}
+
+#success > .row {
+	margin-top: 30px;
+}
+
+#success .total {
+	position: relative;
+	top: -2px;
+}
+
+#success ul {
+	margin: 0px;
+	list-style: none;
+}
+
+	#success ul li {
+		line-height: 20px;
+		color: #888;
+	}
+
+		#success ul li strong {
+			color: #333;
+		}
