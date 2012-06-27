@@ -1,17 +1,33 @@
-<?php $this->Html->script( 'bootstrap/bootstrap-modal', false ) ?>
+<?php
+
+$this->Html->script( 'bootstrap/bootstrap-modal', false );
+
+if( empty( $msg ) )
+	$msg = null;
+
+if( empty( $modalTitle ) )
+	$modalTitle = "Exclusão de {$model}";
+
+if( empty( $modalBody ) )
+	$modalBody = "Tem certeza de que deseja excluir este {$model}? {$msg}";
+
+if( empty( $deleteText ) )
+	$modalBody = "Excluir";
+
+?>
 
 <!-- modal -->
 <div class="modal hide fade" id="delete">
 	<div class="modal-header">
 		<a class="close" data-dismiss="modal">×</a>
-		<h3>Exclusão de <?= $model ?></h3>
+		<h3><?= $modalTitle ?></h3>
 	</div>
 	<div class="modal-body">
-		<p>Tem certeza de que deseja excluir este <?= $model ?>? <?php if( !empty( $msg ) ) print $msg; ?></p>
+		<p><?= $modalBody ?></p>
 	</div>
 	<div class="modal-footer">
 		<a id="deleteCancel" href="#" class="btn">Cancelar</a>
-		<a id="deleteConfirm" href="#" class="btn btn-danger"><i class="icon-trash icon-white"></i> Excluir</a>
+		<a id="deleteConfirm" href="#" class="btn btn-danger"><i class="icon-trash icon-white"></i> <?= $deleteText ?></a>
 	</div>
 </div>
 

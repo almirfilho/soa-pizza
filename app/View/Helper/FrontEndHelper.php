@@ -29,6 +29,19 @@ class FrontEndHelper extends AppHelper {
 	 * Methods
 	 ----------------------------------------*/
 
+	public function label( $key, &$labelList ){
+
+		$label = null;
+
+		if( $key == 'O' )
+			$label = 'label-warning';
+
+		elseif( $key == 'C' )
+			$label = 'label-success';
+
+		return "<span class=\"label {$label}\">{$labelList[$key]}</span>";
+	}
+
 	public function cash( $value ){
 
 		return $this->Number->format( $value, array( 'escape' => false, 'before' => 'R$ <span>', 'after' => '</span>', 'decimals' => ',', 'thousands' => '.' ) );

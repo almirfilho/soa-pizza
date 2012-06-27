@@ -91,6 +91,12 @@ div.block {
 	list-style: none;
 }
 
+	#success li.divider {
+		border-top: 1px solid #ccc;
+		border-bottom: 1px solid #eee;
+		margin: 10px 0px;
+	}
+
 	#success ul li {
 		line-height: 20px;
 		color: #888;

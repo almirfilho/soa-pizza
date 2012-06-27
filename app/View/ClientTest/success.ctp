@@ -8,6 +8,8 @@
 					<li>Nome: <i class="icon-user"></i> <strong><?= $order[ 'Order' ][ 'delivery_name' ] ?></strong></li>
 					<li>Endereço: <i class="icon-home"></i> <strong><?= $order[ 'Order' ][ 'delivery_address' ] ?></strong></li>
 					<li>Telefone: <i class="icon-asterisk"></i> <strong><?= $order[ 'Order' ][ 'delivery_phone' ] ?></strong></li>
+					<li class="divider"></li>
+					<li>Pedido <strong>#<?= $order[ 'Order' ][ 'id' ] ?></strong></li>
 					<li>Pedido realizado em: <strong><?= $this->FrontEnd->niceDate( $order[ 'Order' ][ 'delivery_phone' ] ) ?></strong></li>
 					<li>Valor total: <span class="total label label-inverse"><?= $this->FrontEnd->cash( $order[ 'Order' ][ 'total_price' ] ) ?></span></li>
 				</ul>

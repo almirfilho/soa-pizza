@@ -7,3 +7,9 @@ a.brand span.r {
 a.brand span.g {
 	color: #FF2626;
 }
+
+div.divider {
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #fff;
+	margin: 10px 0px 15px 0px;
+}

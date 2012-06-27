@@ -8,6 +8,10 @@ class Order extends AppModel {
 
 	public $name = 'Order';
 
+	public $label = 'Pedido';
+
+	public $status = array( 'O' => 'Em aberto', 'C' => 'Concluído', 'F' => 'Cancelado' );
+
 	/*----------------------------------------
 	 * Associations
 	 ----------------------------------------*/
