@@ -16,7 +16,7 @@ class Pizza extends AppModel {
 	 * Associations
 	 ----------------------------------------*/
 
-	public $belongsTo = array( 'Size', 'Flavor', 'Border' );
+	public $belongsTo = array( 'Order' => array( 'counterCache' => 'items' ), 'Size', 'Flavor', 'Border' );
 
 	/*----------------------------------------
 	 * Private Methods
@@ -53,15 +53,78 @@ class Pizza extends AppModel {
 
 	public function orderPizza($inputParam = null){
 
-		// if( $inputParam ){
-			// $i = print_r($inputParam,true);
-			// $this->query("INSERT INTO tests (string) VALUES ('{$i}')");
-		// }
+		$response = new StdClass();
+		
+		if( empty( $inputParam ) ){
 
+			$response->success = false;
+			$response->message = 'Falta de parâmetros';
+			return $response;
 
+		} elseif( empty( $inputParam->Delivery ) ) {
 
-		// return 'teste feito';
-		return print_r($inputParam,true);
+			$response->success = false;
+			$response->message = 'Falta de parâmetros (Delivery)';
+			return $response;
+
+		} elseif( empty( $inputParam->PizzaItem ) ){
+
+			$response->success = false;
+			$response->message = 'Falta de parâmetros (PizzaItem)';
+			return $response;
+		}
+
+		$order = array(	
+			'Pizza' => array(),
+			'Order' => array(
+				'delivery_name' => $inputParam->Delivery->name,
+				'delivery_address' => $inputParam->Delivery->address,
+				'delivery_phone' => $inputParam->Delivery->phone
+		) );
+
+		$totalPrice = 0;
+
+		if( !is_array( $inputParam->PizzaItem ) )
+			$inputParam->PizzaItem = array( $inputParam->PizzaItem );
+
+		foreach( $inputParam->PizzaItem as $pizza ){
+
+			$this->Flavor->id = $pizza->flavorId;
+			$priceFlavor = $this->Flavor->field( 'price' );
+
+			$this->Border->id = $pizza->borderId;
+			$priceBorder = $this->Border->field( 'price' );
+
+			$this->Size->id = $pizza->sizeId;
+			$sizeFactor = $this->Size->field( 'factor' );
+
+			$price = $sizeFactor * ($priceFlavor + $priceBorder);
+			$totalPrice += $price;
+
+			$order[ 'Pizza' ][] = array(
+				'flavor_id' => $pizza->flavorId,
+				'size_id' => $pizza->sizeId,
+				'border_id' => $pizza->borderId,
+				'price' => $price
+			);
+		}
+
+		$order[ 'Order' ][ 'total_price' ] = $totalPrice;
+		$this->Order->create( $order );
+		
+		if( $this->Order->saveAll($order) ){
+
+			$response->success = true;
+			$response->orderId = $this->Order->id;
+			$response->message = 'Seu pedido foi realizado com sucesso.';
+
+		} else {
+
+			$response->success = false;
+			$response->message = 'Ocorreu um erro ao tentar realizar seu pedido. Por favor tente novamente.';
+		}
+
+		return $response;
 	}
 
 	public function getSizes($inputParam = null) {
@@ -69,7 +132,7 @@ class Pizza extends AppModel {
 		$result = new StdClass();
 		$result->PizzaSize = array();
 
-		$sizes = $this->Size->find( 'all' );
+		$sizes = $this->Size->find( 'all', array( 'order' => 'factor' ) );
 
 		foreach( $sizes as $size )
 			$result->PizzaSize[] = $this->PizzaSize( $size );

@@ -83,6 +83,15 @@ xmlns='http://schemas.xmlsoap.org/wsdl/'>
 			</xs:sequence>
 		</xs:complexType>
 
+		<!-- PizzaOrderFeedback -->
+		<xs:complexType name="PizzaOrderFeedback">
+			<xs:sequence>
+				<xs:element name="success" type="xs:boolean"/>
+				<xs:element name="message" type="xs:string"/>
+				<xs:element name="orderId" type="xs:integer" nillable="true"/>
+			</xs:sequence>
+		</xs:complexType>
+
 		<!-- PizzaOrder -->
 		<xs:complexType name="PizzaOrder">
 			<xs:sequence>
@@ -125,7 +134,7 @@ xmlns='http://schemas.xmlsoap.org/wsdl/'>
 	<part name='upc' type='tns:PizzaOrder'/>
 </message>
 <message name='orderPizzaSoapResponse'>
-	<part name='Result' type='xsd:string'/>
+	<part name='Result' type='tns:PizzaOrderFeedback'/>
 </message>
 
 <portType name='PizzaPortType'>

@@ -16,7 +16,7 @@
 			<div class="container">
 				<?= $this->Html->link( 'Cliente SOA Pizza', '/clientTest', array( 'escape' => false, 'class' => 'brand' ) ) ?>
 				<ul id="menu" class="nav">
-					<li class="<?= $this->FrontEnd->isActive('index', $active) ?>"><?= $this->Html->link( 'Catálogo', '/clientTest' ) ?></li>
+					<li class="<?= $this->FrontEnd->isActive('index', $active) ?>"><?= $this->Html->link( 'Cardápio', '/clientTest' ) ?></li>
 					<li class="<?= $this->FrontEnd->isActive('shop', $active) ?>"><?= $this->Html->link( 'Fazer Pedido', '/clientTest/shop' ) ?></li>
 				</ul>
 			</div>

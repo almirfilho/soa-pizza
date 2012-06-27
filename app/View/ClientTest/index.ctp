@@ -4,10 +4,9 @@
 		<tr>
 			<th>Sabores</th>
 			<th>Ingredientes</th>
-			<th>Pequena</th>
-			<th>Média</th>
-			<th>Grande</th>
-			<th>Gigante</th>
+			<?php foreach( $sizes->PizzaSize as $size ): ?>
+			<th><?= $size->title ?></th>
+			<?php endforeach; ?>
 		</tr>
 	</thead>
 	<tbody>
@@ -23,17 +22,15 @@
 		<?php endforeach; ?>
 	</tbody>
 </table>
-<? //debug($flavors); ?>
 
 <h1>Bordas Recheadas</h1>
 <table class="table table-bordered table-striped">
 	<thead>
 		<tr>
 			<th>Sabores</th>
-			<th>Pequena</th>
-			<th>Média</th>
-			<th>Grande</th>
-			<th>Gigante</th>
+			<?php foreach( $sizes->PizzaSize as $size ): ?>
+			<th><?= $size->title ?></th>
+			<?php endforeach; ?>
 		</tr>
 	</thead>
 	<tbody>
@@ -48,4 +45,3 @@
 		<?php endforeach; ?>
 	</tbody>
 </table>
-<? //debug($borders); ?>

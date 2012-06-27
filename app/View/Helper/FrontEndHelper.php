@@ -31,7 +31,7 @@ class FrontEndHelper extends AppHelper {
 
 	public function cash( $value ){
 
-		return $this->Number->format( $value, array( 'before' => 'R$ ', 'decimals' => ',', 'thousands' => '.' ) );
+		return $this->Number->format( $value, array( 'escape' => false, 'before' => 'R$ <span>', 'after' => '</span>', 'decimals' => ',', 'thousands' => '.' ) );
 	}
 
 	public function message(){
