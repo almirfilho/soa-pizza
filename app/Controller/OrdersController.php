@@ -13,6 +13,8 @@ class OrdersController extends AppController {
 	public $label	= 'Pedidos';
 	
 	public $submenu	= array( 'index', 'all' );
+
+	// public $component = array( 'RequestHandler' );
 	
 	/*----------------------------------------
 	 * Actions
@@ -24,8 +26,11 @@ class OrdersController extends AppController {
 		$this->paginate[ 'fields' ] = array( 'id', 'delivery_name', 'total_price', 'created', 'status' );
 		$this->paginate[ 'order' ] = "Order.created DESC";
 		$this->paginate[ 'conditions' ] = array( 'Order.status' => 'O' );
-		$this->set( "orders", $this->paginate( "Order" ) );
-		$this->set( 'status', $this->Order->status );
+		$this->set( array( 
+			'status' => $this->Order->status,
+			"orders" => $this->paginate( "Order" ), 
+			'_serialize' => array('orders')
+		) );
 	}
 
 	public function all(){
@@ -46,8 +51,11 @@ class OrdersController extends AppController {
 				'Pizza' => array( 'Flavor.title', 'Size.title', 'Border.title' )
 		) ) );
 		$this->checkResult( $order, 'Order' );
-		$this->set( "order", $order );
-		$this->set( 'status', $this->Order->status );
+		$this->set( array(
+			'status' => $this->Order->status,
+			"order" => $order,
+			'_serialize' => array( 'order' )
+		) );
 	}
 
 	public function mark( $id = null, $status = null ){
